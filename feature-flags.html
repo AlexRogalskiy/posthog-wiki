@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Feature Flags - PostHog Playground</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="css/index.css" rel="stylesheet">
+  <link href="css/feature-flags.css" rel="stylesheet">
+  <link href="css/prism.css" rel="stylesheet">
+
+  <script src="scripts/copy-code.js"></script>
+
+  <script>
+    !function (t, e) { var o, n, p, r; e.__SV || (window.posthog = e, e._i = [], e.init = function (i, s, a) { function g(t, e) { var o = e.split("."); 2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } } (p = t.createElement("script")).type = "text/javascript", p.async = !0, p.src = s.api_host + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r); var u = e; for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) { var e = "posthog"; return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e }, u.people.toString = function () { return u.toString(1) + ".people (stub)" }, o = "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags".split(" "), n = 0; n < o.length; n++)g(u, o[n]); e._i.push([i, s, a]) }, e.__SV = 1) }(document, window.posthog || []);
+  </script>
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">PostHog Playground</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/posthog/posthog.github.io" target="_blank">GitHub</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://posthog.com" target="_blank">PostHog Website</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://posthog.com/docs/tutorials" target="_blank">Tutorials</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.posthog.com" target="_blank">Try PostHog</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="header-bg py-5 mb-5">
+    <div class="container h-100">
+      <div class="row h-100 align-items-center">
+        <div class="col-lg-12">
+          <h1 class="display-4 text-white mt-5 mb-2">Feature Flags Playground <img class="banner-image"
+              src="./static/posthog-logo-circle.png" /></h1>
+          <p class="lead mb-5 text-white-50">This page is a supporting resource and playground for our <a
+              href="https://posthog.com/docs/tutorials/feature-flags">Feature Flags Tutorial</a>.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12 mb-0">
+        <h2>About this Playground</h2>
+        <hr>
+        <p class="about-paragraph">
+          In this playground you can see how feature flags work by selecting your favorite ice cream flavor. You can
+          also <b>open your developer
+          tools console</b> to see logs from the PostHog feature flag functions being called.
+        </p>
+        <p class="about-paragraph">
+          Demo Flag 1 will be on for 50% of users and off for the rest. You cannot change this. You may access this website from a different
+          browser to potentially see the difference. 
+        </p>
+        <p class="about-paragraph">
+          Demo Flag 2 will be on for users who select vanilla as their favorite ice cream flavor. Try changing your preference and see how
+          the page changes.
+        </p>
+<!--         <a class="btn btn-primary btn-lg" target="_blank" href="https://posthog.com/docs/tutorials/feature-flags">Access
+          Feature Flags Tutorial &raquo;</a> -->
+      </div>
+      <!-- /.row -->
+    </div>
+
+    <hr class="divider" />
+    <br />
+
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <h4>Demo Flag 1: 
+          <span id="result-flag-1"></span>
+          <span class="tooltip-info" data-toggle="tooltip" data-placement="right" title="Demo Flag 1: On for 50% of users. Determines the color of the 'Save Preference' button.">ⓘ</span>
+        </h4>
+        <h4>Demo Flag 2: 
+          <span id="result-flag-2"></span>
+          <span class="tooltip-info" data-toggle="tooltip" data-placement="right" title="Demo Flag 2: On for users with their favorite ice cream preference set to vanilla. Determines the color of the ice cream selector element.">ⓘ</span>
+        </h4>
+        <br />
+        <p>Select your favorite ice cream flavor:</p>
+
+        <select id="select-ice-cream" name="select-ice-cream" class="form-control">
+          <option selected value="chocolate">Chocolate</option>
+          <option value="vanilla">Vanilla</option>
+          <option value="strawberry">Strawberry</option>
+          <option value="other">Other</option>
+        </select>
+        <button id="save-preference-btn" class="btn btn-md btn-primary">
+          Save Preference
+        </button>
+        <div class="lds-dual-ring" id="loading-ring"></div>
+        <br /><br />
+        <small>Changes not showing? Try <a href="javascript:location.reload();">refreshing the page.</a></small>
+      </div>
+      <!-- /.row -->
+    </div>
+    <hr class="divider" />
+    <br />
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <h2>What's going on here?</h1>
+          <br />
+          <p>'Demo Flag 1' is a feature flag based on rollout percentage only. It is set to be on for 50% of the users.
+            This is a
+            random selection but will persist. In this page, it is controlling the color of the 'Save Preference'
+            button. If you are seeing
+            a green button, it means that the flag is on for you. This will persist across sessions, so refreshing the
+            page should have no effect.
+            Users with this flag off will see a blue button.
+          </p>
+          <p>'Demo Flag 2' is a feature flag based on user properties. It is set to be on for users with the
+            'favorite_icecream' property
+            set to 'vanilla'. If your preference is currently set to 'vanilla' on PostHog, this flag will be on. You can
+            test this by changing
+            the preferences. In this case, every time you change your preference, this website updates your favorite ice
+            cream choice, flushes
+            the events to PostHog, waits, retrives the updated feature flags following the property changes, and then
+            reacts accordingly.
+          </p>
+          <p>
+            Here's the simple vanilla JS code coordinating all the logic on this page:
+          </p>
+          <pre><code class="language-js" id="feature-flags-logic">const hey = "loading..."</code></pre>
+
+          <br />
+          <h2>Why the timeouts?</h2>
+          <p>
+            You might have noticed that there are quite a few timeouts in the code. The reason for this is that feature
+            flags are not meant
+            to be used for instantaneous logic updates. Rather, they are used for persistent, long-lasting, significant
+            functionality toggles.
+          <p>
+            As a result, when using them with the goal of receiving instant feedback, timeouts are necessary to give the
+            server time
+            to process the property change that toggles the feature flag.
+          </p>
+          <p>
+            The time for this to happen can vary on your volume, since PostHog uses workers to process incoming events.
+          </p>
+          </p>
+
+      </div>
+      <!-- /.row -->
+    </div>
+
+  </div>
+  <!-- /.container -->
+
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts/feature-flags.js"></script>
+  <script src="scripts/tooltips.js"></script>
+
+</body>
+
+<script src="scripts/prism.js"></script>
+
+</html>
